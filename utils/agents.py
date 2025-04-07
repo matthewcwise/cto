@@ -7,6 +7,14 @@ from .prompts import (
     PRODUCT_MANAGER_EVALUATION_TEMPLATE,
     ENGINEERING_MANAGER_TASK_TEMPLATE
 )
+from .robust_prompts import (
+    ROBUST_CTO_SYSTEM_PROMPT,
+    ROBUST_PRODUCT_MANAGER_SYSTEM_PROMPT,
+    ROBUST_ENGINEERING_MANAGER_SYSTEM_PROMPT,
+    ROBUST_CTO_EVALUATION_TEMPLATE,
+    ROBUST_PRODUCT_MANAGER_EVALUATION_TEMPLATE,
+    ROBUST_ENGINEERING_MANAGER_TASK_TEMPLATE
+)
 import os
 import json
 import re
@@ -96,6 +104,52 @@ class EngineeringManager:
             technical_strategy = technical_strategy.content
             
         prompt = ENGINEERING_MANAGER_TASK_TEMPLATE.format(
+            requirements=requirements,
+            technical_strategy=technical_strategy
+        )
+        response = self.client.generate_response(prompt, self.system_prompt)
+        return AgentResponse(response)
+
+class RobustCTO:
+    def __init__(self):
+        self.client = ClaudeClient()
+        self.system_prompt = ROBUST_CTO_SYSTEM_PROMPT
+
+    def evaluate_project(self, description):
+        prompt = ROBUST_CTO_EVALUATION_TEMPLATE.format(description=description)
+        response = self.client.generate_response(prompt, self.system_prompt)
+        return AgentResponse(response)
+
+class RobustProductManager:
+    def __init__(self):
+        self.client = ClaudeClient()
+        self.system_prompt = ROBUST_PRODUCT_MANAGER_SYSTEM_PROMPT
+
+    def evaluate_project(self, description, technical_strategy):
+        # Extract just the content from CTO's technical strategy if it's an AgentResponse
+        if isinstance(technical_strategy, AgentResponse):
+            technical_strategy = technical_strategy.content
+            
+        prompt = ROBUST_PRODUCT_MANAGER_EVALUATION_TEMPLATE.format(
+            description=description,
+            technical_strategy=technical_strategy
+        )
+        response = self.client.generate_response(prompt, self.system_prompt)
+        return AgentResponse(response)
+
+class RobustEngineeringManager:
+    def __init__(self):
+        self.client = ClaudeClient()
+        self.system_prompt = ROBUST_ENGINEERING_MANAGER_SYSTEM_PROMPT
+
+    def create_task_list(self, requirements, technical_strategy):
+        # Extract just the content if they're AgentResponses
+        if isinstance(requirements, AgentResponse):
+            requirements = requirements.content
+        if isinstance(technical_strategy, AgentResponse):
+            technical_strategy = technical_strategy.content
+            
+        prompt = ROBUST_ENGINEERING_MANAGER_TASK_TEMPLATE.format(
             requirements=requirements,
             technical_strategy=technical_strategy
         )
