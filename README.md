@@ -21,13 +21,17 @@ pip install -r requirements.txt
 
 2. Create a `.env` file with your Claude API key:
 ```
+# Copy the example file
+cp .env.example .env
+
+# Then edit .env with your actual API key
 ANTHROPIC_API_KEY=your_api_key_here
 ```
 
 3. Run the program:
 ```bash
 python main.py
-```
+```bash
 
 ## Workflows
 
@@ -56,3 +60,11 @@ Ideal for production-grade software development:
 3. Provide a project description
 4. Answer follow-up questions from each agent
 5. Review detailed output reports in the `outputs` directory 
+python main.py
+```bash
+python main.py
+```bash
+python main.py
+```bash
+python main.py
+```

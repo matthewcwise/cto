@@ -64,11 +64,11 @@ If you need more information, set command to "follow-up" and provide specific qu
 If you have enough information, set command to "pass-on" and provide a practical implementation plan."""
 
 # Prompt templates
-CTO_EVALUATION_TEMPLATE = """Project Description:
-{description}
+CTO_EVALUATION_TEMPLATE = """Prototype Requirements:
+{requirements}
 
-Please evaluate this project idea and either:
-1. Ask clarifying questions about the core functionality needed
+Please evaluate these requirements and either:
+1. Ask clarifying questions about the technical implementation needed
 2. Generate a practical technical approach including:
    - Core technologies to use
    - Simple architecture for quick implementation
@@ -82,9 +82,6 @@ Your response MUST be a valid JSON object as specified in your instructions."""
 
 PRODUCT_MANAGER_EVALUATION_TEMPLATE = """Project Description:
 {description}
-
-Technical Approach:
-{technical_strategy}
 
 Please evaluate this project from a prototype planning perspective and either:
 1. Ask clarifying questions about the core functionality needed
