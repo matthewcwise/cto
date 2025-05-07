@@ -1,23 +1,22 @@
 from .claude_client import ClaudeClient
 from .prompts import (
-    CTO_SYSTEM_PROMPT,
-    PRODUCT_MANAGER_SYSTEM_PROMPT,
-    ENGINEERING_MANAGER_SYSTEM_PROMPT,
-    CTO_EVALUATION_TEMPLATE,
-    PRODUCT_MANAGER_EVALUATION_TEMPLATE,
-    ENGINEERING_MANAGER_TASK_TEMPLATE
-)
-from .robust_prompts import (
+    # Task Generator prompts
+    TASK_GENERATOR_SYSTEM_PROMPT,
+    TASK_GENERATOR_TEMPLATE,
+    # Prototype workflow prompts
+    PROTOTYPE_CTO_SYSTEM_PROMPT,
+    PROTOTYPE_PRODUCT_MANAGER_SYSTEM_PROMPT,
+    PROTOTYPE_ENGINEERING_MANAGER_SYSTEM_PROMPT,
+    PROTOTYPE_CTO_TEMPLATE,
+    PROTOTYPE_PRODUCT_MANAGER_TEMPLATE,
+    PROTOTYPE_ENGINEERING_MANAGER_TEMPLATE,
+    # Robust workflow prompts
     ROBUST_CTO_SYSTEM_PROMPT,
     ROBUST_PRODUCT_MANAGER_SYSTEM_PROMPT,
     ROBUST_ENGINEERING_MANAGER_SYSTEM_PROMPT,
-    ROBUST_CTO_EVALUATION_TEMPLATE,
-    ROBUST_PRODUCT_MANAGER_EVALUATION_TEMPLATE,
-    ROBUST_ENGINEERING_MANAGER_TASK_TEMPLATE
-)
-from .task_generator_prompts import (
-    TASK_GENERATOR_SYSTEM_PROMPT,
-    TASK_GENERATOR_TEMPLATE
+    ROBUST_CTO_TEMPLATE,
+    ROBUST_PRODUCT_MANAGER_TEMPLATE,
+    ROBUST_ENGINEERING_MANAGER_TEMPLATE
 )
 import os
 import json
@@ -96,25 +95,25 @@ class AgentResponse:
 class CTO:
     def __init__(self):
         self.client = ClaudeClient()
-        self.system_prompt = CTO_SYSTEM_PROMPT
+        self.system_prompt = PROTOTYPE_CTO_SYSTEM_PROMPT
         self.model = DEFAULT_MODEL
 
     def evaluate_project(self, requirements):
         # requirements is now the output from ProductManager
         if isinstance(requirements, AgentResponse):
             requirements = requirements.content
-        prompt = CTO_EVALUATION_TEMPLATE.format(requirements=requirements)
+        prompt = PROTOTYPE_CTO_TEMPLATE.format(requirements=requirements)
         response = self.client.generate_response(prompt, self.system_prompt, model=self.model)
         return AgentResponse(response)
 
 class ProductManager:
     def __init__(self):
         self.client = ClaudeClient()
-        self.system_prompt = PRODUCT_MANAGER_SYSTEM_PROMPT
+        self.system_prompt = PROTOTYPE_PRODUCT_MANAGER_SYSTEM_PROMPT
         self.model = DEFAULT_MODEL
 
     def evaluate_project(self, description):
-        prompt = PRODUCT_MANAGER_EVALUATION_TEMPLATE.format(
+        prompt = PROTOTYPE_PRODUCT_MANAGER_TEMPLATE.format(
             description=description
         )
         response = self.client.generate_response(prompt, self.system_prompt, model=self.model)
@@ -123,7 +122,7 @@ class ProductManager:
 class EngineeringManager:
     def __init__(self):
         self.client = ClaudeClient()
-        self.system_prompt = ENGINEERING_MANAGER_SYSTEM_PROMPT
+        self.system_prompt = PROTOTYPE_ENGINEERING_MANAGER_SYSTEM_PROMPT
         self.model = DEFAULT_MODEL
 
     def create_task_list(self, requirements, technical_strategy):
@@ -133,7 +132,7 @@ class EngineeringManager:
         if isinstance(technical_strategy, AgentResponse):
             technical_strategy = technical_strategy.content
             
-        prompt = ENGINEERING_MANAGER_TASK_TEMPLATE.format(
+        prompt = PROTOTYPE_ENGINEERING_MANAGER_TEMPLATE.format(
             requirements=requirements,
             technical_strategy=technical_strategy
         )
@@ -184,7 +183,7 @@ class RobustCTO:
         self.model = DEFAULT_MODEL
 
     def evaluate_project(self, description):
-        prompt = ROBUST_CTO_EVALUATION_TEMPLATE.format(description=description)
+        prompt = ROBUST_CTO_TEMPLATE.format(description=description)
         response = self.client.generate_response(prompt, self.system_prompt, model=self.model)
         return AgentResponse(response)
 
@@ -199,7 +198,7 @@ class RobustProductManager:
         if isinstance(technical_strategy, AgentResponse):
             technical_strategy = technical_strategy.content
             
-        prompt = ROBUST_PRODUCT_MANAGER_EVALUATION_TEMPLATE.format(
+        prompt = ROBUST_PRODUCT_MANAGER_TEMPLATE.format(
             description=description,
             technical_strategy=technical_strategy
         )
@@ -219,7 +218,7 @@ class RobustEngineeringManager:
         if isinstance(technical_strategy, AgentResponse):
             technical_strategy = technical_strategy.content
             
-        prompt = ROBUST_ENGINEERING_MANAGER_TASK_TEMPLATE.format(
+        prompt = ROBUST_ENGINEERING_MANAGER_TEMPLATE.format(
             requirements=requirements,
             technical_strategy=technical_strategy
         )
